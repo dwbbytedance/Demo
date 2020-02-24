@@ -21,7 +21,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.window = window
         
         
-        let nav = UINavigationController(rootViewController: TestViewController())
+        let nav = UINavigationController(rootViewController: ViewController())
         window.rootViewController = nav
         window.makeKeyAndVisible()
         

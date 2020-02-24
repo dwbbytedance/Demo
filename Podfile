@@ -1,8 +1,11 @@
 install! 'cocoapods', :disable_input_output_paths => true
 platform :ios, '10.0'
+require 'bd_pod_extentions'
+
+bd_use_app("public")
 
 target 'Demo' do
-#  pod 'RangersAppLog','4.3.0'
+  pod 'RangersAppLog/Picker',"> =4.3.3"
   # pod 'GrowingAutoTrackKit'
   pod 'RxDataSources', '~> 4.0'
   pod 'TestHook',:path => '.'
