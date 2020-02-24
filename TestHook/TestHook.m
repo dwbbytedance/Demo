@@ -50,7 +50,7 @@ BOOL test_swizzle_instance(id obj, SEL originSEL, SEL swizzledSelector, Method s
 {
     Class statedCls = [obj class];
     Class baseCls = object_getClass(obj);
-//    Method swizzledMethod = class_getClassMethod(baseCls, swizzledSelector);
+//    Method swizzledMethod = class_getInstanceMethod(baseCls, swizzledSelector);
     const char* swizzled_methodEncoding = method_getTypeEncoding(swizzledMethod);
     
     NSString *className = NSStringFromClass(baseCls);
@@ -66,8 +66,7 @@ BOOL test_swizzle_instance(id obj, SEL originSEL, SEL swizzledSelector, Method s
         IMP swizzledIMP = method_getImplementation(swizzledMethod);
         return class_addMethod(baseCls, originSEL, swizzledIMP, swizzled_methodEncoding);
     }
-    const char *subclassName =
-    [className stringByAppendingString:Test_Suffix_].UTF8String;
+    const char *subclassName = [className stringByAppendingString:Test_Suffix_].UTF8String;
     Class subclass = objc_getClass(subclassName);
     if (subclass == nil) {
         subclass = objc_allocateClassPair(baseCls, subclassName, 0);
@@ -117,7 +116,9 @@ _Nullable Method test_classSearchInstanceMethodUntilClass(Class _Nullable aClass
     NSCParameterAssert(selector != NULL && !class_isMetaClass(aClass));
     if(aClass != nil && selector != NULL && !class_isMetaClass(aClass)) {
         Class currentClass = aClass;
+        
         while(currentClass != NULL && currentClass != untilClassExcluded) {
+            NSLog(@"InstanceClass %@",currentClass);
             Method currentMethod = test_classHasInstanceMethod(currentClass, selector);
             if(currentMethod) return currentMethod;
             else currentClass = class_getSuperclass(currentClass);

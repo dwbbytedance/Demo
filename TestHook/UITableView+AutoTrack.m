@@ -10,14 +10,20 @@
 #import <Aspects/Aspects.h>
 #import "TestHook.h"
 
-@implementation UITableView (AutoTrack)
+@interface Test : NSObject
 
-- (void)test_tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSLog(@"%@",self);
-    NSLog(@"%@",self.class);
-    NSLog(@"%@",object_getClass(self));
-    ((void( *)(id, SEL, UITableView *, NSIndexPath *))objc_msgSend)(self, @selector(tableView:didSelectRowAtIndexPath:), tableView, indexPath);
+@end
+
+@implementation Test
+
+- (id)forwardingTargetForSelector:(SEL)aSelector {
+    NSLog(@"forwardingTargetForSelector: %@", NSStringFromSelector(aSelector));
+    return [super forwardingTargetForSelector:aSelector];
 }
+
+@end
+
+@implementation UITableView (AutoTrack)
 
 + (void)load {
     static dispatch_once_t onceToken;
@@ -25,11 +31,14 @@
         id block = ^(id<AspectInfo> aspectInfo) {
             NSLog(@"instance %@", aspectInfo.instance);
             NSLog(@"arguments %@", aspectInfo.arguments);
-            id<NSObject> delegate = aspectInfo.arguments.firstObject;
+            id delegate = aspectInfo.arguments.firstObject;
             BOOL res = [delegate respondsToSelector:@selector(tableView:didSelectRowAtIndexPath:)];
             NSLog(@"%@",delegate);
             if (res) {
-                NSLog(@"method:%d", test_classSearchInstanceMethodUntilClass(delegate.class, @selector(tableView:didSelectRowAtIndexPath:), [NSObject class]) != NULL);
+                Method swizzledMethod = class_getInstanceMethod([Test class], @selector(forwardingTargetForSelector:));
+                BOOL s = test_swizzle_instance(delegate, @selector(forwardingTargetForSelector:), @selector(forwardingTargetForSelector:), swizzledMethod, YES);
+                NSLog(@"test_swizzle_instance %d", s);
+                
             }
         };
 
