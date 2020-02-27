@@ -7,7 +7,7 @@
 //
 
 import UIKit
-//import GrowingAutoTrackKit
+import RangersAppLog
 
 
 @UIApplicationMain
@@ -25,16 +25,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window.rootViewController = nav
         window.makeKeyAndVisible()
         
-//        Growing.start(withAccountId: "b00e318ad7a731d8")
-//        Growing.setEnableLog(true)
         
         return true
     }
 
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
-//        if (Growing.handle(url)) {
-//            return true
-//        }
+        if (BDAutoTrackSchemeHandler.shared().handle(url, appID: "123", scene: nil)) {
+            return true
+        }
         
         return false
     }

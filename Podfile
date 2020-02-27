@@ -1,12 +1,10 @@
+source 'https://cdn.cocoapods.org/'
+source 'https://github.com/CocoaPods/Specs.git'
 install! 'cocoapods', :disable_input_output_paths => true
 platform :ios, '10.0'
-require 'bd_pod_extentions'
-
-bd_use_app("public")
 
 target 'Demo' do
-  pod 'RangersAppLog/Picker',"> =4.3.3"
-  # pod 'GrowingAutoTrackKit'
+  pod 'RangersAppLog','4.4.0'
   pod 'RxDataSources', '~> 4.0'
   pod 'TestHook',:path => '.'
 end
